@@ -36,6 +36,7 @@ class GLUtil {
             }catch (e : IOException){
                 e.printStackTrace()
             }
+            //Log.d("  ", "readRawShaderCode: ${body.toString()}")
             return body.toString()
         }
 
@@ -50,7 +51,7 @@ class GLUtil {
          */
         fun compileShaderCode(type:Int,shaderCode:String) : Int{
 
-            Log.d("TAG", "compileShaderCode: $shaderCode")
+           // Log.d("TAG", "compileShaderCode: $shaderCode")
             //得到一个着色器的id 对id进行操作 it
             GLES20.glCreateShader(type).also { shader ->
                 GLES20.glShaderSource(shader,shaderCode)

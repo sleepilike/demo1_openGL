@@ -1,11 +1,13 @@
 package com.example.demo1_opengl.holder
 
+import android.graphics.ImageFormat
 import android.graphics.SurfaceTexture
 import android.hardware.Camera
 import android.hardware.Camera.CameraInfo
 import android.opengl.GLES20
 import android.view.Surface
 import androidx.appcompat.app.AppCompatActivity
+import com.example.demo1_opengl.view.CameraSurfaceView
 
 
 /**
@@ -13,25 +15,57 @@ import androidx.appcompat.app.AppCompatActivity
  *
  * 控制类
  */
-class CameraPresenter(appCompatActivity: AppCompatActivity) {
+class CameraPresenter(appCompatActivity: AppCompatActivity,cameraSurfaceView: CameraSurfaceView) {
 
 
-    private var cameraId : Int =getCameraId(Camera.CameraInfo.CAMERA_FACING_BACK)
-    private var camera : Camera = Camera.open(cameraId)
-    private lateinit var parameters : Camera.Parameters
-    private var orientation : Int = 0
 
-    private lateinit var surfaceTexture: SurfaceTexture
+    companion object{
+        var cameraId : Int =getCameraId(Camera.CameraInfo.CAMERA_FACING_BACK)
+        var camera : Camera = Camera.open(cameraId)
+        lateinit var parameters : Camera.Parameters
+        var orientation : Int = 0
+
+        private fun getCameraId(faceOrBack : Int) : Int{
+            val numbers = Camera.getNumberOfCameras()
+            for (i in 0 until numbers){
+                val info = Camera.CameraInfo()
+                Camera.getCameraInfo(i,info)
+                if(info.facing == faceOrBack)
+                    return i
+            }
+            return  -1
+        }
+    }
+
+
+    private var surfaceTexture: SurfaceTexture
+    private var cameraSurfaceView : CameraSurfaceView = cameraSurfaceView
 
     init {
-        bindSurfaceView()
+
+        initParameters()
+        surfaceTexture = SurfaceTexture(cameraSurfaceView.mRender.mDrawer.textureId)
+        camera.setPreviewTexture(surfaceTexture)
         setPreviewSize()
         setCameraDisplayOrientation(appCompatActivity)
-        surfaceTexture.setOnFrameAvailableListener(SurfaceTexture.OnFrameAvailableListener {
 
 
-        })
     }
+
+    fun initParameters(){
+        try{
+            parameters = camera.parameters
+            //预览格式
+            //预览格式
+            parameters.previewFormat = ImageFormat.NV21
+            //判断是否支持连续自动对焦图像
+            //判断是否支持连续自动对焦图像
+            camera.parameters = parameters
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+    }
+
 
     /**
      * 创建纹理并绑定到surfaceTexture
@@ -44,16 +78,7 @@ class CameraPresenter(appCompatActivity: AppCompatActivity) {
 
     }
 
-    private fun getCameraId(faceOrBack : Int) : Int{
-        val numbers = Camera.getNumberOfCameras()
-        for (i in 0 until numbers){
-            val info = Camera.CameraInfo()
-            Camera.getCameraInfo(i,info)
-            if(info.facing == faceOrBack)
-                return i
-        }
-        return  -1
-    }
+
 
 
     /**
@@ -71,7 +96,7 @@ class CameraPresenter(appCompatActivity: AppCompatActivity) {
      * 调整预览方向
      * 官方推荐方法
      */
-    private fun setCameraDisplayOrientation(appCompatActivity: AppCompatActivity, ) {
+    private fun setCameraDisplayOrientation(appCompatActivity: AppCompatActivity) {
         val cameraInfo = CameraInfo()
         Camera.getCameraInfo(cameraId, cameraInfo)
         val rotation = appCompatActivity.windowManager.defaultDisplay.rotation
