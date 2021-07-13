@@ -1,13 +1,18 @@
 package com.example.demo1_opengl.config
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import android.util.Log
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
-import java.lang.StringBuilder
+import java.nio.FloatBuffer
+
 
 /**
  * Created by zyy on 2021/7/12
@@ -87,8 +92,9 @@ class GLUtil {
             val programId = GLES20.glCreateProgram()
 
             GLES20.glAttachShader(programId,vertexShaderId)
+            checkGlError("glAttachShader");
             GLES20.glAttachShader(programId,fragmentShaderId)
-
+            checkGlError("glAttachShader");
             GLES20.glLinkProgram(programId)
 
             var status = IntArray(1)
@@ -132,5 +138,58 @@ class GLUtil {
             return textureId[0]
 
         }
+
+        fun create2DTexture() : Int{
+            var textureId = IntArray(1)
+            GLES20.glGenTextures(1,textureId,0)
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,textureId[0])
+
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_REPEAT);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_REPEAT);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,0)
+            return textureId[0]
+        }
+
+        /**
+         * 将文字转为图片
+         */
+        fun createTextImage(
+            text: String,
+            textSize: Float,
+            textColor: String?,
+            bgColor: String?,
+            padding: Float,
+        ): Bitmap {
+            val paint = Paint()
+            paint.color = Color.parseColor(textColor)
+            paint.textSize = textSize
+            paint.style = Paint.Style.FILL
+            paint.isAntiAlias = true
+
+            val width: Float = paint.measureText(text, 0, text.length)
+            val top: Float = paint.fontMetrics.top
+            val bottom: Float = paint.fontMetrics.bottom
+            val bm = Bitmap.createBitmap((width + padding * 2).toInt(),
+                (bottom - top + padding * 2).toInt(), Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bm)
+            canvas.drawColor(Color.parseColor(bgColor))
+            canvas.drawText(text, padding, -top + padding, paint)
+            return bm
+        }
+
+        fun checkGlError(op: String) {
+            val error = GLES20.glGetError()
+            Log.d("TAG", "checkGlError: $error")
+            if (error != GLES20.GL_NO_ERROR) {
+                val msg = op + ": glError 0x" + Integer.toHexString(error)
+                Log.d("TAG", "checkGlError: $msg")
+                throw RuntimeException(msg)
+            }
+        }
+
+
     }
 }

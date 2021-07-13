@@ -19,7 +19,7 @@ class PermissionUtil {
          * @param permission
          */
         fun showPermissionSettingDialog(context: Context, permission: String) {
-            val msg = "本App需要" + permission + "权限才能正常运行，请点击确定，进入设置界面进行授权处理~"
+            val msg = "需要" + permission + "权限才能正常运行，请进入设置界面进行授权处理~"
             val builder = AlertDialog.Builder(context)
             builder.setMessage(msg)
                 .setPositiveButton("确定") { _, _ -> //前往设置页

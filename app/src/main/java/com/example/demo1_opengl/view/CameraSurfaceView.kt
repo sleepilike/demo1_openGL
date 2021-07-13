@@ -1,15 +1,17 @@
 package com.example.demo1_opengl.view
 
 import android.content.Context
-import android.graphics.SurfaceTexture
 import android.opengl.GLSurfaceView
+import android.view.SurfaceHolder
+import androidx.appcompat.app.AppCompatActivity
 import com.example.demo1_opengl.render.CameraRender
+
 
 /**
  * Created by zyy on 2021/7/12
  *
  */
-class CameraSurfaceView (context: Context): GLSurfaceView(context),SurfaceTexture.OnFrameAvailableListener {
+class CameraSurfaceView (context: Context,appCompatActivity: AppCompatActivity): GLSurfaceView(context) {
 
 
     var mRender : CameraRender
@@ -17,16 +19,17 @@ class CameraSurfaceView (context: Context): GLSurfaceView(context),SurfaceTextur
 
     init {
         setEGLContextClientVersion(2)
-        mRender = CameraRender(context)
+        mRender = CameraRender(appCompatActivity,this)
         setRenderer(mRender)
         setRenderMode(RENDERMODE_WHEN_DIRTY);
     }
 
-    override fun onFrameAvailable(p0: SurfaceTexture?) {
-        //TODO("Not yet implemented")
-        //提示新的数据流到来
-        this.requestRender()
+    override fun surfaceDestroyed(holder: SurfaceHolder) {
+        super.surfaceDestroyed(holder)
+
     }
+
+
 
 
 

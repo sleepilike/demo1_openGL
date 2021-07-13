@@ -4,26 +4,25 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.demo1_opengl.config.PermissionUtil
 import com.example.demo1_opengl.config.ToastUtil
-import com.example.demo1_opengl.holder.CameraPresenter
 import com.example.demo1_opengl.view.CameraSurfaceView
+
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var cameraSurfaceView: CameraSurfaceView
-    private lateinit var cameraPresenter: CameraPresenter
+    private lateinit var mView : CameraSurfaceView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        cameraSurfaceView = CameraSurfaceView(this)
-        cameraPresenter = CameraPresenter(this,cameraSurfaceView)
-
-        setContentView(cameraSurfaceView)
         checkNeedPermissions()
+
+        mView = CameraSurfaceView(this,this)
+        setContentView(mView)
+
     }
 
 

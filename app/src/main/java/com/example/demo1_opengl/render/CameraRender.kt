@@ -2,12 +2,10 @@ package com.example.demo1_opengl.render
 
 import android.content.Context
 import android.graphics.SurfaceTexture
-import android.opengl.GLES11Ext
+import android.graphics.SurfaceTexture.OnFrameAvailableListener
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
-import android.opengl.GLU
-import android.view.Surface
-import com.example.demo1_opengl.config.BufferUtil
+import androidx.appcompat.app.AppCompatActivity
 import com.example.demo1_opengl.config.GLUtil
 import com.example.demo1_opengl.holder.CameraPresenter
 import com.example.demo1_opengl.shape.Drawer
@@ -18,26 +16,44 @@ import javax.microedition.khronos.opengles.GL10
  * Created by zyy on 2021/7/12
  *
  */
-class CameraRender(context: Context) : GLSurfaceView.Renderer ,SurfaceTexture.OnFrameAvailableListener{
+class CameraRender(appCompatActivity: AppCompatActivity,glSurfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
 
-    private var context : Context = context
-     var mDrawer: Drawer = Drawer(context)
-    lateinit var mSurface : SurfaceTexture
 
+    private var cameraPresenter :CameraPresenter = CameraPresenter(appCompatActivity)
+    private lateinit var mDrawer: Drawer
+    private var mTexture : Int = -1
+    private lateinit var mSurfaceTexture: SurfaceTexture
+    private var glSurfaceView : GLSurfaceView = glSurfaceView
+
+    //变换矩阵
+    private var mtx = FloatArray(16)
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
+        //文字支持透明
+        GLES20.glEnable(GLES20.GL_BLEND);
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
 
-        mSurface = SurfaceTexture(mDrawer.textureId)
-        mSurface.setOnFrameAvailableListener(this)
+        mTexture = GLUtil.createOESTexture()
+        mSurfaceTexture = SurfaceTexture(mTexture)
+        mSurfaceTexture.setOnFrameAvailableListener(OnFrameAvailableListener {
+            //触发 GLSurfaceView 的render的 onDrawFrame
+            glSurfaceView.requestRender()
+        })
 
-        //创建surface时打开相机
-        CameraPresenter.camera.startPreview()
+        mDrawer = Drawer(glSurfaceView.context)
+
     }
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
 
         GLES20.glViewport(0,0,width,height)
+        cameraPresenter.width = width
+        cameraPresenter.height = height
+        //开始预览
+        cameraPresenter.startPreview(mSurfaceTexture)
+
+
 
     }
 
@@ -46,15 +62,17 @@ class CameraRender(context: Context) : GLSurfaceView.Renderer ,SurfaceTexture.On
         GLES20.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
-        mSurface.updateTexImage()
+        //将摄像头数据从surfaceTure中取出
+        mSurfaceTexture.updateTexImage()
+        mSurfaceTexture.getTransformMatrix(mtx)
+
+
+        mDrawer.draw(mTexture,mtx )
+
 
     }
 
-    override fun onFrameAvailable(p0: SurfaceTexture?) {
-        //TODO("Not yet implemented")
-        //提示新的数据流到来
 
-    }
 
 
 }
