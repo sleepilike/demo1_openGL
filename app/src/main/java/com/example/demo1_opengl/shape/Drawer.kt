@@ -82,8 +82,7 @@ class Drawer (context: Context){
     init {
 
 
-        //bitmap = GLUtil.fromText(12.0f,"dddddd")
-       // bitmap = BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher)
+
         bitmap = GLUtil.createTextImage("水印~~！！~~",10.0f,"#fff000","#00000000",0.0f)
         createWaterTextureId()
 
