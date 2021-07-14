@@ -7,8 +7,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.demo1_opengl.config.PermissionUtil
-import com.example.demo1_opengl.config.ToastUtil
+import com.example.demo1_opengl.utils.PermissionUtil
+import com.example.demo1_opengl.utils.ToastUtil
 import com.example.demo1_opengl.view.CameraSurfaceView
 
 

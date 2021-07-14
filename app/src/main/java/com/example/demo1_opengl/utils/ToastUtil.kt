@@ -1,4 +1,4 @@
-package com.example.demo1_opengl.config
+package com.example.demo1_opengl.utils
 
 import android.content.Context
 import android.widget.Toast

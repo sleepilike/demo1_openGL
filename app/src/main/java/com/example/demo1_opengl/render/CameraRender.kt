@@ -1,14 +1,13 @@
 package com.example.demo1_opengl.render
 
-import android.content.Context
 import android.graphics.SurfaceTexture
 import android.graphics.SurfaceTexture.OnFrameAvailableListener
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.demo1_opengl.config.GLUtil
+import com.example.demo1_opengl.utils.GLUtil
 import com.example.demo1_opengl.holder.CameraPresenter
-import com.example.demo1_opengl.shape.Drawer
+import com.example.demo1_opengl.filter.Drawer
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -19,7 +18,7 @@ import javax.microedition.khronos.opengles.GL10
 class CameraRender(appCompatActivity: AppCompatActivity,glSurfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
 
 
-    private var cameraPresenter :CameraPresenter = CameraPresenter(appCompatActivity)
+    private var cameraPresenter :CameraPresenter = CameraPresenter()
     private lateinit var mDrawer: Drawer
     private var mTexture : Int = -1
     private lateinit var mSurfaceTexture: SurfaceTexture

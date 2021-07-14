@@ -1,4 +1,4 @@
-package com.example.demo1_opengl.config
+package com.example.demo1_opengl.utils
 
 import java.nio.ByteBuffer
 import java.nio.ByteOrder

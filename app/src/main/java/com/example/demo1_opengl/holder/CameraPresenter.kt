@@ -16,7 +16,7 @@ import java.util.*
  *
  * 控制类
  */
-class CameraPresenter(appCompatActivity: AppCompatActivity) : Camera.PreviewCallback{
+class CameraPresenter() : Camera.PreviewCallback{
 
 
 

@@ -1,4 +1,4 @@
-package com.example.demo1_opengl.config
+package com.example.demo1_opengl.utils
 
 import android.app.AlertDialog
 import android.content.Context

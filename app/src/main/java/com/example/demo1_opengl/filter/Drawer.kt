@@ -1,16 +1,17 @@
-package com.example.demo1_opengl.shape
+package com.example.demo1_opengl.filter
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import android.opengl.GLUtils
-import android.util.Log
-import com.example.demo1_opengl.R
-import com.example.demo1_opengl.config.BufferUtil
-import com.example.demo1_opengl.config.GLUtil
-
+import com.example.demo1_opengl.utils.BufferUtil
+import com.example.demo1_opengl.utils.GLUtil
+/**
+ * Created by zyy on 2021/7/12
+ *
+ * oes预览相机 并添加水印
+ */
 class Drawer (context: Context){
     private val TAG : String = "Drawer"
     //顶点坐标
@@ -19,7 +20,6 @@ class Drawer (context: Context){
         1.0f, -1.0f,
         -1f,1f,
         1.0f, 1.0f,
-
     )
 
     //纹理坐标
@@ -55,7 +55,7 @@ class Drawer (context: Context){
     private var mWaterTextureBuffer = BufferUtil.toFloatBuffer(WATER_TEXTURE_COORDS)
 
 
-    private var vertexShaderCode : String = GLUtil.readRawShaderCode(context,"shader/vertex_shader.glsl")
+    private var vertexShaderCode : String = GLUtil.readRawShaderCode(context,"shader/oes_vertex_shader.glsl")
     private var fragmentShaderCode : String = GLUtil.readRawShaderCode(context, "shader/oes_fragment_shader.glsl")
     private var twoFragmentShaderCode : String = GLUtil.readRawShaderCode(context,"shader/two_fragment_shader.glsl")
     private var twoVertexShaderCode : String = GLUtil.readRawShaderCode(context,"shader/two_vertex_shader.glsl")
