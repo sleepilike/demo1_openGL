@@ -77,7 +77,6 @@ class Drawer (context: Context){
 
     var tPosition : Int = 0
     var tCoord : Int = 0
-    //var tMatrix : Int = 0
     var tTexture : Int = 0
     init {
 

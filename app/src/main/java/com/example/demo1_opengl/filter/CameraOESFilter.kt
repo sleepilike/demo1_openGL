@@ -18,24 +18,20 @@ class CameraOESFilter(context: Context) : AbstractFilter(context) {
 
 
     override fun createProgram(context: Context): Int {
-        //TODO("Not yet implemented")
         var vertexShaderId = compileShader(VERTEX_FILE,GLES20.GL_VERTEX_SHADER)
         var fragmentShaderId = compileShader(FRAGMNET_FILE,GLES20.GL_FRAGMENT_SHADER)
         return GLUtil.linkProgram(vertexShaderId,fragmentShaderId)
     }
 
     override fun getGLSLHandle() {
-        //TODO("Not yet implemented")
     }
 
     override fun bindTexture(textureId: Int) {
-        TODO("Not yet implemented")
     }
 
 
 
     override fun getTextureType(): Int {
-        //TODO("Not yet implemented")
         return GLES11Ext.GL_SAMPLER_EXTERNAL_OES
     }
 
@@ -48,10 +44,10 @@ class CameraOESFilter(context: Context) : AbstractFilter(context) {
         mtx: FloatArray,
         count: Int,
     ) {
-        //TODO("Not yet implemented")
+
     }
 
     override fun releaseProgram() {
-        //TODO("Not yet implemented")
+
     }
 }
