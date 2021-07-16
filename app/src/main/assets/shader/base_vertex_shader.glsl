@@ -8,5 +8,5 @@ varying vec2 aCoord;
 void main(){
 
     gl_Position = vPosition;
-    aCoord =  vCoord;
+    aCoord =   vCoord;
 }

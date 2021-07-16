@@ -1,40 +1,39 @@
-package com.example.demo1_opengl.filter
+package com.example.demo1_opengl.filter.base
 
 import android.content.Context
-import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import android.opengl.Matrix
-import com.example.demo1_opengl.filter.base.AbstractFilter
 import com.example.demo1_opengl.utils.GLUtil
 import java.nio.FloatBuffer
 
 /**
- * Created by zyy on 2021/7/14
- *
+ * Created by zyy on 2021/7/16
+ * 最基本的filter
  */
-class CameraOESFilter(context: Context) : AbstractFilter(context) {
-    val VERTEX_FILE = "shader/oes_vertex_shader.glsl"
-    val FRAGMNET_FILE = "shader/oes_fragment_shader.glsl"
+class DefaultFilter(context: Context) : AbstractFilter(context) {
 
+    val VERTEX_FILE = "shader/base_vertex_shader.glsl"
+    val FRAGMNET_FILE = "shader/base_fragment_shader.glsl"
 
     override fun createProgram(context: Context): Int {
 
-        return 0
+        return GLUtil.createProgram(context,VERTEX_FILE,FRAGMNET_FILE)
     }
 
     override fun getGLSLHandle() {
+
     }
 
     override fun bindTexture(textureId: Int) {
+
     }
 
     override fun bindGLSLValues(stride: Int) {
 
     }
 
-
     override fun getTextureType(): Int {
-        return GLES11Ext.GL_SAMPLER_EXTERNAL_OES
+        return GLES20.GL_TEXTURE_2D
     }
 
     override fun onDraw(
@@ -52,4 +51,5 @@ class CameraOESFilter(context: Context) : AbstractFilter(context) {
     override fun releaseProgram() {
 
     }
+
 }

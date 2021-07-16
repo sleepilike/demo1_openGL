@@ -21,9 +21,14 @@ class CameraSurfaceView (context: Context,appCompatActivity: AppCompatActivity):
         setEGLContextClientVersion(2)
         mRender = CameraRender(appCompatActivity,this)
         setRenderer(mRender)
-        setRenderMode(RENDERMODE_WHEN_DIRTY);
+        renderMode = RENDERMODE_WHEN_DIRTY;
     }
 
+    fun change(boolean: Boolean){
+
+        mRender.changeType(boolean)
+
+    }
     override fun surfaceDestroyed(holder: SurfaceHolder) {
         super.surfaceDestroyed(holder)
 

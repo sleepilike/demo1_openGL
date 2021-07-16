@@ -4,29 +4,49 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.demo1_opengl.utils.PermissionUtil
 import com.example.demo1_opengl.utils.ToastUtil
 import com.example.demo1_opengl.view.CameraSurfaceView
+import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams as LayoutParams1
 
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mView : CameraSurfaceView
-
+    private lateinit var mButton : Button
+    private lateinit var mLayout : ConstraintLayout
+    private var mType : Boolean = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        mLayout = findViewById(R.id.constrain_layout)
         if (supportActionBar != null){
             supportActionBar?.hide()
         }
+
         checkNeedPermissions()
 
+
+
         mView = CameraSurfaceView(this,this)
-        setContentView(mView)
+        mLayout.addView(mView)
+
+
+        mButton = findViewById(R.id.cut_bt)
+
+        mButton.setOnClickListener {
+            mType = !mType
+            mView.change(mType)
+        }
 
     }
 

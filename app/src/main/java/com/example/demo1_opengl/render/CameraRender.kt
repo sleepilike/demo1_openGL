@@ -29,6 +29,8 @@ class CameraRender(appCompatActivity: AppCompatActivity,glSurfaceView: GLSurface
     private var glSurfaceView : GLSurfaceView = glSurfaceView
     private lateinit var glFrameBuffer : GLFrameBuffer
 
+
+    private var mType : Boolean = true
     //变换矩阵
     private var mtx = FloatArray(16)
 
@@ -59,10 +61,10 @@ class CameraRender(appCompatActivity: AppCompatActivity,glSurfaceView: GLSurface
         cameraPresenter.width = width
         cameraPresenter.height = height
 
-        //glFrameBuffer.width = width
-        //glFrameBuffer.height = 16*width/9
-        glFrameBuffer.width =1000
-        glFrameBuffer.height = 1000
+        glFrameBuffer.width = width
+        glFrameBuffer.height = 16*width/9
+        //glFrameBuffer.width =500
+       // glFrameBuffer.height = 2000
         glFrameBuffer.prepare()
         Log.d("TAG", "cameraPresenter.width: $width")
         Log.d("TAG", "cameraPresenter.height: $height")
@@ -83,6 +85,7 @@ class CameraRender(appCompatActivity: AppCompatActivity,glSurfaceView: GLSurface
         GLES20.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
+
         //将摄像头数据从surfaceTure中取出
         mSurfaceTexture.updateTexImage()
         mSurfaceTexture.getTransformMatrix(mtx)
@@ -98,8 +101,12 @@ class CameraRender(appCompatActivity: AppCompatActivity,glSurfaceView: GLSurface
         mFBODrawer.draw()
 
 
-        //mDrawer.draw(mTexture,mtx)
 
+    }
+
+    fun changeType(boolean: Boolean){
+        mType = boolean
+        mFBODrawer.setCutType(mType)
     }
 
 

@@ -23,13 +23,23 @@ class Drawer (context: Context){
     )
 
     //纹理坐标
+
     val TEXTURE_COORDS = floatArrayOf(
         1.0f, 0.0f,
         1.0f, 1.0f,
         0.0f, 0.0f,
         0.0f, 1.0f
     )
+/*
+    val TEXTURE_COORDS = floatArrayOf(
+        0.0f,1.0f,
+        0.0f,0.0f,
+        1.0f,1.0f,
+        1.0f,0.0f
+    )
 
+
+ */
     //水印坐标
     val WATER_COORDS = floatArrayOf(
         -0.9f,-0.9f,
@@ -57,8 +67,8 @@ class Drawer (context: Context){
 
     private var vertexShaderCode : String = GLUtil.readRawShaderCode(context,"shader/oes_vertex_shader.glsl")
     private var fragmentShaderCode : String = GLUtil.readRawShaderCode(context, "shader/oes_fragment_shader.glsl")
-    private var twoFragmentShaderCode : String = GLUtil.readRawShaderCode(context,"shader/two_fragment_shader.glsl")
-    private var twoVertexShaderCode : String = GLUtil.readRawShaderCode(context,"shader/two_vertex_shader.glsl")
+    private var twoFragmentShaderCode : String = GLUtil.readRawShaderCode(context,"shader/base_fragment_shader.glsl")
+    private var twoVertexShaderCode : String = GLUtil.readRawShaderCode(context,"shader/base_vertex_shader.glsl")
 
     var vertexShaderId : Int = GLUtil.compileShaderCode(GLES20.GL_VERTEX_SHADER,vertexShaderCode)
     var fragmentShaderId : Int = GLUtil.compileShaderCode(GLES20.GL_FRAGMENT_SHADER,fragmentShaderCode)

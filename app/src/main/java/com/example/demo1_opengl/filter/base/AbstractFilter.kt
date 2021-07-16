@@ -16,10 +16,7 @@ abstract class AbstractFilter(context: Context) : IFilter{
 
     abstract fun createProgram(context: Context) : Int
 
-    fun compileShader(file: String, type: Int): Int {
-        var shaderCode = GLUtil.readRawShaderCode(context, file)
-        return GLUtil.compileShaderCode(type, shaderCode)
-    }
+
 
     abstract fun getGLSLHandle()
 
@@ -27,6 +24,13 @@ abstract class AbstractFilter(context: Context) : IFilter{
         GLES20.glUseProgram(mProgramId)
     }
     abstract fun bindTexture(textureId : Int)
+
+    abstract fun bindGLSLValues(
+        stride: Int,
+
+    )
+
+
 
 
 

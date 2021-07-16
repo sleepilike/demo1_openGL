@@ -20,6 +20,20 @@ import java.io.InputStreamReader
 class GLUtil {
     companion object{
 
+        fun createProgram(
+            context: Context,
+            vertexFile : String,
+            fragmentFile : String) :Int{
+
+            var vertexCode = readRawShaderCode(context,vertexFile)
+            var fragmentCode = readRawShaderCode(context,fragmentFile)
+
+            var vertexShaderId = compileShaderCode(GLES20.GL_VERTEX_SHADER,vertexCode)
+            var fragmentShaderId = compileShaderCode(GLES20.GL_FRAGMENT_SHADER,fragmentCode)
+
+            return linkProgram(vertexShaderId,fragmentShaderId)
+
+        }
         /**
          * 从assert 中读取ShaderCode
          */
