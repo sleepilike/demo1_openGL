@@ -26,10 +26,12 @@ class Drawer (context: Context){
 
     val TEXTURE_COORDS = floatArrayOf(
         1.0f, 0.0f,
-        1.0f, 1.0f,
-        0.0f, 0.0f,
-        0.0f, 1.0f
+        1.0f, 0.5f,
+        0.5f, 0.0f,
+        0.5f, 0.5f
     )
+
+
 /*
     val TEXTURE_COORDS = floatArrayOf(
         0.0f,1.0f,
@@ -40,6 +42,8 @@ class Drawer (context: Context){
 
 
  */
+
+
     //水印坐标
     val WATER_COORDS = floatArrayOf(
         -0.9f,-0.9f,

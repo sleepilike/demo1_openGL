@@ -8,5 +8,6 @@ varying vec2 aCoord;
 void main(){
 
     gl_Position = vPosition;
+   // aCoord = vCoord.xy;
     aCoord = (vMatrix * vCoord).xy;
 }
