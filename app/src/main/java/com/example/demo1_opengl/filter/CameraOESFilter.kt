@@ -5,6 +5,7 @@ import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import android.opengl.Matrix
 import com.example.demo1_opengl.filter.base.AbstractFilter
+import com.example.demo1_opengl.filter.base.DefaultFilter
 import com.example.demo1_opengl.utils.GLUtil
 import java.nio.FloatBuffer
 
@@ -12,26 +13,14 @@ import java.nio.FloatBuffer
  * Created by zyy on 2021/7/14
  *
  */
-class CameraOESFilter(context: Context) : AbstractFilter(context) {
-    val VERTEX_FILE = "shader/oes_vertex_shader.glsl"
-    val FRAGMNET_FILE = "shader/oes_fragment_shader.glsl"
+class CameraOESFilter(context: Context) : DefaultFilter(context) {
+    override val VERTEX_FILE = "shader/oes_vertex_shader.glsl"
+    override val FRAGMNET_FILE = "shader/oes_fragment_shader.glsl"
 
 
     override fun createProgram(context: Context): Int {
-
-        return 0
+        return GLUtil.createProgram(context,VERTEX_FILE,FRAGMNET_FILE)
     }
-
-    override fun getGLSLHandle() {
-    }
-
-    override fun bindTexture(textureId: Int) {
-    }
-
-    override fun bindGLSLValues(stride: Int) {
-
-    }
-
 
     override fun getTextureType(): Int {
         return GLES11Ext.GL_SAMPLER_EXTERNAL_OES
@@ -44,10 +33,13 @@ class CameraOESFilter(context: Context) : AbstractFilter(context) {
         textureBuffer: FloatBuffer,
         matrix: Matrix,
         mtx: FloatArray,
+        textureId: Int,
+        size: Int,
         count: Int,
     ) {
-
+        super.onDraw(positionHandle, vertexBuffer, coordHandle, textureBuffer, matrix, mtx, textureId, size, count)
     }
+
 
     override fun releaseProgram() {
 

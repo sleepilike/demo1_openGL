@@ -8,28 +8,16 @@ import java.nio.FloatBuffer
 
 /**
  * Created by zyy on 2021/7/16
- * 最基本的filter
+ * 最基本的filter 2D
  */
-class DefaultFilter(context: Context) : AbstractFilter(context) {
+open class DefaultFilter(context: Context) : AbstractFilter(context) {
 
-    val VERTEX_FILE = "shader/base_vertex_shader.glsl"
-    val FRAGMNET_FILE = "shader/base_fragment_shader.glsl"
+    open val VERTEX_FILE = "shader/base_vertex_shader.glsl"
+    open val FRAGMNET_FILE = "shader/base_fragment_shader.glsl"
 
     override fun createProgram(context: Context): Int {
 
         return GLUtil.createProgram(context,VERTEX_FILE,FRAGMNET_FILE)
-    }
-
-    override fun getGLSLHandle() {
-
-    }
-
-    override fun bindTexture(textureId: Int) {
-
-    }
-
-    override fun bindGLSLValues(stride: Int) {
-
     }
 
     override fun getTextureType(): Int {
@@ -43,13 +31,25 @@ class DefaultFilter(context: Context) : AbstractFilter(context) {
         textureBuffer: FloatBuffer,
         matrix: Matrix,
         mtx: FloatArray,
-        count: Int,
+        textureId: Int,
+        size: Int, //一个点几个坐标
+        count: Int, //一共几个点
     ) {
+
+        useProgram()
+        bindGLSLValues(size,vertexBuffer,textureBuffer,mtx)
+        bindTexture(textureId)
+        drawArrays(0,count)
+
+        unbindGLSLValues()
+        unbindTexture()
+        disUseProgram()
 
     }
 
-    override fun releaseProgram() {
 
+    override fun releaseProgram() {
+        super.releaseProgram()
     }
 
 }

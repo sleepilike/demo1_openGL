@@ -91,7 +91,7 @@ class FBODrawer (context: Context){
         GLES20.glUniform1i(tTexture,0)
 
 
-        GLES20.glUniformMatrix4fv(tMatrix,1,false,matrix,0)
+        //GLES20.glUniformMatrix4fv(tMatrix,1,false,matrix,0)
 
 
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP,0,4)
@@ -208,7 +208,7 @@ class FBODrawer (context: Context){
 
         }else{
 
-            Log.d("TAG,,", "computeInside: 1111")
+            Log.d("TAG", "computeInside: 1111")
 
             //高 背景色
             var heightRatio = screenWidth/picWidth

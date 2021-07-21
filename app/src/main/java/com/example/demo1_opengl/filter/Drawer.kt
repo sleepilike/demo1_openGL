@@ -112,7 +112,7 @@ class Drawer (context: Context){
         vMatrix = GLES20.glGetUniformLocation(mProgramId,"vMatrix");
         vTexture = GLES20.glGetUniformLocation(mProgramId,"vTexture");
 
-        tMatrix = GLES20.glGetUniformLocation(mProgramId,"u_matrix")
+        //tMatrix = GLES20.glGetUniformLocation(mProgramId,"u_matrix")
         tPosition = GLES20.glGetAttribLocation(mTwoProgramId,"vPosition");
         tCoord = GLES20.glGetAttribLocation(mTwoProgramId,"vCoord");
         //tMatrix = GLES20.glGetUniformLocation(mTwoProgramId,"vMatrix");
@@ -137,11 +137,11 @@ class Drawer (context: Context){
     fun draw(mTexture :Int ,mtx : FloatArray){
         GLES20.glUseProgram(mProgramId)
 
-        mVertexBuffer.position(0)
+        //mVertexBuffer.position(0)
         GLES20.glEnableVertexAttribArray(vPosition)
         GLES20.glVertexAttribPointer(vPosition, 2, GLES20.GL_FLOAT, false, 0, mVertexBuffer)
 
-        mTextureBuffer.position(0)
+        //mTextureBuffer.position(0)
         GLES20.glEnableVertexAttribArray(vCoord)
         GLES20.glVertexAttribPointer(vCoord, 2, GLES20.GL_FLOAT, false, 0, mTextureBuffer)
 

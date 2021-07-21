@@ -18,6 +18,7 @@ class BufferUtil {
                 asFloatBuffer().apply {
                     put(array)
                     // 将缓冲区的指针移动到头部，保证数据是从最开始处读取
+                    position(0)
                 }
             }
         }
@@ -28,6 +29,7 @@ class BufferUtil {
                 asShortBuffer().apply {
                     put(array)
                     // 将缓冲区的指针移动到头部，保证数据是从最开始处读取
+                    position(0)
                 }
             }
         }
