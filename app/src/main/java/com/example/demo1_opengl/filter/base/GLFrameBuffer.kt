@@ -8,7 +8,7 @@ import com.example.demo1_opengl.utils.GLUtil
  * Created by zyy on 2021/7/15
  *
  */
-class GLFrameBuffer (oesTextureID :Int){
+class GLFrameBuffer (){
 
      val TAG : String = "GLFrameBuffer"
      var mFrameBuffer : Int = -1
@@ -16,7 +16,7 @@ class GLFrameBuffer (oesTextureID :Int){
      var height : Int = 0
      var width : Int = 0
      var m2DTextureId : Int = -1
-     var mOESTextureId : Int = oesTextureID;
+
 
 
      fun prepare(){

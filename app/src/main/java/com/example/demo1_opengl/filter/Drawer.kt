@@ -26,9 +26,9 @@ class Drawer (context: Context){
 
     val TEXTURE_COORDS = floatArrayOf(
         1.0f, 0.0f,
-        1.0f, 0.5f,
-        0.5f, 0.0f,
-        0.5f, 0.5f
+        1.0f, 1f,
+        0.0f, 0.0f,
+        0.0f, 1.0f
     )
 
 
@@ -57,6 +57,12 @@ class Drawer (context: Context){
         0f,0f,
         1f,0f
     )
+
+    var matrix = floatArrayOf(
+        1f, 0f, 0f, 0f,
+        0f, 1f, 0f, 0f,
+        0f, 0f, 1f, 0f,
+        0f, 0f, 0f, 1f)
 
 
     //水印
@@ -92,6 +98,7 @@ class Drawer (context: Context){
     var tPosition : Int = 0
     var tCoord : Int = 0
     var tTexture : Int = 0
+    var tMatrix : Int = 0
     init {
 
 
@@ -105,6 +112,7 @@ class Drawer (context: Context){
         vMatrix = GLES20.glGetUniformLocation(mProgramId,"vMatrix");
         vTexture = GLES20.glGetUniformLocation(mProgramId,"vTexture");
 
+        tMatrix = GLES20.glGetUniformLocation(mProgramId,"u_matrix")
         tPosition = GLES20.glGetAttribLocation(mTwoProgramId,"vPosition");
         tCoord = GLES20.glGetAttribLocation(mTwoProgramId,"vCoord");
         //tMatrix = GLES20.glGetUniformLocation(mTwoProgramId,"vMatrix");
@@ -164,6 +172,8 @@ class Drawer (context: Context){
         mWaterTextureBuffer.position(0)
         GLES20.glEnableVertexAttribArray(tCoord)
         GLES20.glVertexAttribPointer(tCoord, 2, GLES20.GL_FLOAT, false, 0, mWaterTextureBuffer)
+
+        GLES20.glUniformMatrix4fv(tMatrix,1,false,matrix,0)
 
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,waterTextureId)

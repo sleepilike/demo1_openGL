@@ -2,16 +2,21 @@ package com.example.demo1_opengl.filter
 
 import android.content.Context
 import android.opengl.GLES20
+import android.opengl.Matrix
 import android.util.Log
 import com.example.demo1_opengl.utils.BufferUtil
 import com.example.demo1_opengl.utils.GLUtil
+import com.example.demo1_opengl.utils.MatrixUtil
 import java.nio.FloatBuffer
 
 /**
  * Created by zyy on 2021/7/15
  *
+ * oes -> fbo -> 2d ->屏幕
  */
 class FBODrawer (context: Context){
+
+    var isTaking : Boolean = false
 
     var type : Boolean = true;
     //true代表crop false代表inside
@@ -24,6 +29,12 @@ class FBODrawer (context: Context){
 
     //纹理坐标
     var TEXTURE_COORDS = FloatArray(8)
+
+    var matrix = floatArrayOf(
+        1f, 0f, 0f, 0f,
+        0f, 1f, 0f, 0f,
+        0f, 0f, 1f, 0f,
+        0f, 0f, 0f, 1f)
 
     private lateinit var mVertexBuffer : FloatBuffer
     private lateinit var mTextureBuffer : FloatBuffer
@@ -38,7 +49,9 @@ class FBODrawer (context: Context){
     var tPosition : Int = 0
     var tCoord : Int = 0
     var tTexture : Int = 0
+    var tMatrix :Int = 0
     init {
+        tMatrix = GLES20.glGetUniformLocation(mProgramId,"u_matrix")
         tPosition = GLES20.glGetAttribLocation(mProgramId,"vPosition");
         tCoord = GLES20.glGetAttribLocation(mProgramId,"vCoord");
         tTexture = GLES20.glGetUniformLocation(mProgramId,"vTexture");
@@ -56,10 +69,14 @@ class FBODrawer (context: Context){
         picWidth = pWidth
         picHeight = pHeight
         computeCropTexture()
-        computeInside()
     }
-    fun draw(){
+    fun  draw(){
         GLES20.glUseProgram(mProgramId)
+
+        if (type)
+            computeCropTexture()
+        else
+            computeInside()
 
         mVertexBuffer.position(0)
         GLES20.glEnableVertexAttribArray(tPosition)
@@ -73,17 +90,21 @@ class FBODrawer (context: Context){
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,mTextureId)
         GLES20.glUniform1i(tTexture,0)
 
+
+        GLES20.glUniformMatrix4fv(tMatrix,1,false,matrix,0)
+
+
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP,0,4)
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,0)
     }
     fun setCutType(type : Boolean){
         this.type = type
-        if (type)
-            computeCropTexture()
-        else
-            computeInside()
+    }
+    fun setIsTaking(isTaking : Boolean){
+        this.isTaking = isTaking
     }
     fun computeCropTexture(){
+        //纹理坐标做改变
         //放大  宽度需要裁剪居中
 
         VERTEX_COORDS = floatArrayOf(
@@ -94,12 +115,28 @@ class FBODrawer (context: Context){
         )
 
         //纹理坐标
-        TEXTURE_COORDS = floatArrayOf(
-            0f,0f,
-            1f,0f,
-            0f,1f,
-            1f,1f
-        )
+
+        if(isTaking){
+            //左上角
+            TEXTURE_COORDS = floatArrayOf(
+                0f,1f,
+                0.5f,1f,
+                0f,0.5f,
+                0.5f,0.5f
+            )
+        }else{
+
+            TEXTURE_COORDS = floatArrayOf(
+                0f,0f,
+                1f,0f,
+                0f,1f,
+                1f,1f
+            )
+        }
+
+
+
+
         var inputAspect : Float = picWidth.toFloat()/picHeight.toFloat()
         var outAspect : Float = screenWidth.toFloat()/screenHeight.toFloat()
 
@@ -139,12 +176,22 @@ class FBODrawer (context: Context){
         )
 
         //纹理坐标
-        TEXTURE_COORDS = floatArrayOf(
-            0f,0f,
-            1f,0f,
-            0f,1f,
-            1f,1f
-        )
+        if(isTaking){
+            TEXTURE_COORDS = floatArrayOf(
+                0f,1f,
+                1f,1f,
+                0f,0f,
+                1f,0f
+            )
+        }else{
+            TEXTURE_COORDS = floatArrayOf(
+                0f,0f,
+                1f,0f,
+                0f,1f,
+                1f,1f
+            )
+        }
+
         var inputAspect : Float = picWidth.toFloat()/picHeight.toFloat()
         var outAspect : Float = screenWidth.toFloat()/screenHeight.toFloat()
         if(inputAspect < outAspect){
@@ -178,4 +225,5 @@ class FBODrawer (context: Context){
         mTextureBuffer = BufferUtil.toFloatBuffer(TEXTURE_COORDS)
 
     }
+
 }

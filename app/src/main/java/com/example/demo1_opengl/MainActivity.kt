@@ -1,108 +1,98 @@
 package com.example.demo1_opengl
 
 import android.Manifest
-import android.content.pm.PackageManager
-import android.os.Build
+import android.graphics.Bitmap
+import android.media.Image
 import android.os.Bundle
+import android.os.Handler
+import android.os.Message
+import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import android.view.Window
-import android.view.WindowManager
 import android.widget.Button
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.ImageView
+import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import com.example.demo1_opengl.utils.PermissionUtil
-import com.example.demo1_opengl.utils.ToastUtil
+import com.example.demo1_opengl.render.CameraRender
 import com.example.demo1_opengl.view.CameraSurfaceView
-import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams as LayoutParams1
+import kotlin.math.log
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity(),View.OnClickListener{
 
     private lateinit var mView : CameraSurfaceView
     private lateinit var mButton : Button
-    private lateinit var mLayout : ConstraintLayout
+    private lateinit var mTakeButton: Button
+    private lateinit var mImageView : ImageView
+    private lateinit var mLayout : RelativeLayout
     private var mType : Boolean = true
+
+    private var handler : Handler = object : Handler(){
+        override fun handleMessage(msg: Message) {
+            super.handleMessage(msg)
+            when(msg.what){
+                1-> {
+                    Log.d("TAG,","handleMessage: 111")
+                    mImageView.setImageBitmap(msg.obj as Bitmap)
+                }
+            }
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        mLayout = findViewById(R.id.constrain_layout)
+        mLayout = findViewById(R.id.relative_layout)
         if (supportActionBar != null){
             supportActionBar?.hide()
         }
 
-        checkNeedPermissions()
+        requestPermission("请给予相机、存储权限，以便app正常工作",
+            null,
+            *arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE))
 
+       // mView = CameraSurfaceView(this)
+       // mLayout.addView(mView)
+        mView = findViewById(R.id.camera_view)
 
-
-        mView = CameraSurfaceView(this,this)
-        mLayout.addView(mView)
 
 
         mButton = findViewById(R.id.cut_bt)
+        mButton.setOnClickListener (this)
 
-        mButton.setOnClickListener {
-            mType = !mType
-            mView.change(mType)
-        }
+        mTakeButton = findViewById(R.id.put_bt)
+        mTakeButton.setOnClickListener(this)
+
+        mImageView = findViewById(R.id.photo_iv)
+
 
     }
-
-
-
-    /**
-     * 检查所需要的权限
-     */
-    private fun checkNeedPermissions() {
-
-        //Android6.0 以上 需要动态申请
-        //Build.VERSION.SDK_INT 获取手机的操作系统版本号
-        val pm = packageManager
-        var permission = PackageManager.PERMISSION_GRANTED ==
-                pm.checkPermission("android.permission.CAMERA", this.packageName)
-        if (permission) {
-            //"有这个权限"
-        } else {
-            //"没有这个权限"
-            //如果android版本大于等于6.0，权限需要动态申请
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(arrayOf(Manifest.permission.CAMERA), 15)
+    override fun onClick(v: View?) {
+        when(v?.id){
+            R.id.cut_bt -> {
+                Log.d("TAG", "onClick: 1")
+                mType = !mType
+                mView.change(mType)
             }
-        }
-        if (Build.VERSION.SDK_INT >= 23) {
-            if ((ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                        != PackageManager.PERMISSION_GRANTED)) {
-                ActivityCompat.requestPermissions(this, arrayOf(
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.RECORD_AUDIO
-                ), 1)
+            R.id.put_bt ->{
+                mView.take(true)
+                mView.mRender.setOnListener(object : CameraRender.MInterface{
+                    override fun take(bitmap: Bitmap) {
+                        var message  = Message()
+                        message.what = 1
+                        message.obj = bitmap
+                       handler.sendMessage(message)
+                    }
+
+                })
             }
         }
     }
 
-    /**
-     * 权限回调
-     */
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String?>,
-        grantResults: IntArray,
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            1 -> if (grantResults.isNotEmpty()) {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                } else {
-                    PermissionUtil.showPermissionSettingDialog(this, Manifest.permission.CAMERA)
-                }
-            } else {
-                ToastUtil.showShortToast(this, "请重试~~")
-            }
-        }
-    }
+
+
+
+
+
+
 
 }
