@@ -178,7 +178,6 @@ class CameraPresenter() : Camera.PreviewCallback{
 
 
     override fun onPreviewFrame(data: ByteArray?, camera: Camera?) {
-        //TODO("Not yet implemented")
         //数据是倒的
         mPreviewCallback?.onPreviewFrame(data, camera)
         camera?.addCallbackBuffer(buffer)

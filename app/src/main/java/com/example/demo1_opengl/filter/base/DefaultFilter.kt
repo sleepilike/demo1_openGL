@@ -29,7 +29,6 @@ open class DefaultFilter(context: Context) : AbstractFilter(context) {
         vertexBuffer: FloatBuffer,
         coordHandle: Int,
         textureBuffer: FloatBuffer,
-        matrix: Matrix,
         mtx: FloatArray,
         textureId: Int,
         size: Int, //一个点几个坐标

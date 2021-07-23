@@ -145,22 +145,22 @@ class FBODrawer (context: Context){
 
             var heightRatio = outAspect/inputAspect
             var newHeiht = picHeight.toFloat() *heightRatio
-            var sub = (newHeiht - picHeight.toFloat())/2f
-            TEXTURE_COORDS[1] += 1/sub
-            TEXTURE_COORDS[3] += 1/sub
-            TEXTURE_COORDS[5] -= 1/sub
-            TEXTURE_COORDS[7] -= 1/sub
+            var sub = (newHeiht - picHeight.toFloat())/picHeight/2
+            TEXTURE_COORDS[1] += sub
+            TEXTURE_COORDS[3] += sub
+            TEXTURE_COORDS[5] -= sub
+            TEXTURE_COORDS[7] -= sub
 
         }else{
 
             //宽裁剪
             var widthRatio = inputAspect/outAspect
             var newWidth = picWidth.toFloat() * widthRatio
-            var sub = (newWidth - picWidth.toFloat())/2f
-            TEXTURE_COORDS[0] += 1/sub
-            TEXTURE_COORDS[2] -= 1/sub
-            TEXTURE_COORDS[4] += 1/sub
-            TEXTURE_COORDS[6] -= 1/sub
+            var sub = (newWidth - picWidth.toFloat())/picWidth/2
+            TEXTURE_COORDS[0] += sub
+            TEXTURE_COORDS[2] -= sub
+            TEXTURE_COORDS[4] += sub
+            TEXTURE_COORDS[6] -= sub
         }
         mVertexBuffer = BufferUtil.toFloatBuffer(VERTEX_COORDS)
         mTextureBuffer = BufferUtil.toFloatBuffer(TEXTURE_COORDS)
@@ -199,7 +199,7 @@ class FBODrawer (context: Context){
             //宽 背景色
             var widthRatio  = screenHeight/picHeight
             var newWidth = picWidth.toFloat() * widthRatio
-            var sub = (screenWidth.toFloat() - newWidth)/screenWidth
+            var sub = (screenWidth.toFloat() - newWidth)/screenWidth/2
             Log.d("TAG", "computeInside: $sub")
             VERTEX_COORDS[0] += sub
             VERTEX_COORDS[2] -= sub
@@ -213,7 +213,7 @@ class FBODrawer (context: Context){
             //高 背景色
             var heightRatio = screenWidth/picWidth
             var newHeight = picHeight.toFloat() * heightRatio
-            var sub = (screenHeight.toFloat() - newHeight)/screenHeight
+            var sub = (screenHeight.toFloat() - newHeight)/screenHeight/2
             VERTEX_COORDS[1] += sub
             VERTEX_COORDS[3] += sub
             VERTEX_COORDS[5] -= sub

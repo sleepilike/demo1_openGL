@@ -11,7 +11,7 @@ interface IFilter {
 
     fun getTextureType() : Int
     fun onDraw(positionHandle : Int,vertexBuffer: FloatBuffer, coordHandle : Int,textureBuffer: FloatBuffer,
-               matrix: Matrix,mtx : FloatArray, textureId :Int,size : Int,count : Int)
+               mtx : FloatArray, textureId :Int,size : Int,count : Int)
 
     fun releaseProgram()
 

@@ -22,18 +22,19 @@ class GLFrameBuffer (){
      fun prepare(){
           create2DTexture()
           createAndBindFrameBuffer()
-          createAndBindRenderBuffer()
+          //createAndBindRenderBuffer()
           attachFrameBuffer()
      }
 
 
-     private fun create2DTexture () :Int{
+     private fun create2DTexture () {
+
           m2DTextureId = GLUtil.create2DTexture()
           GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,m2DTextureId)
           GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, width, height, 0,
                GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
           GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,0)
-          return m2DTextureId
+
      }
 
      private fun createAndBindFrameBuffer() {
@@ -54,7 +55,8 @@ class GLFrameBuffer (){
 
      private fun attachFrameBuffer(){
           // 将renderBuffer挂载到frameBuffer的depth attachment 上
-          GLES20.glFramebufferRenderbuffer(GLES20.GL_FRAMEBUFFER, GLES20.GL_DEPTH_ATTACHMENT, GLES20.GL_RENDERBUFFER, mRenderBuffer);
+         // GLES20.glFramebufferRenderbuffer(GLES20.GL_FRAMEBUFFER, GLES20.GL_DEPTH_ATTACHMENT, GLES20.GL_RENDERBUFFER, mRenderBuffer);
+
           // 将text2d挂载到frameBuffer的color attachment上
           GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, m2DTextureId, 0);
 

@@ -12,6 +12,7 @@ import java.nio.FloatBuffer
 /**
  * Created by zyy on 2021/7/14
  *
+ * 相机 外部纹理 oes 实现预览
  */
 class CameraOESFilter(context: Context) : DefaultFilter(context) {
     override val VERTEX_FILE = "shader/oes_vertex_shader.glsl"
@@ -37,11 +38,11 @@ class CameraOESFilter(context: Context) : DefaultFilter(context) {
         size: Int,
         count: Int,
     ) {
-        super.onDraw(positionHandle, vertexBuffer, coordHandle, textureBuffer, matrix, mtx, textureId, size, count)
+        super.onDraw(positionHandle, vertexBuffer, coordHandle, textureBuffer,  mtx, textureId, size, count)
     }
 
 
     override fun releaseProgram() {
-
+        super.releaseProgram()
     }
 }
