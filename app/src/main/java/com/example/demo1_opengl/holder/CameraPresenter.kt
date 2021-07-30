@@ -15,6 +15,7 @@ import java.util.*
  * Created by zyy on 2021/7/12
  *
  * 控制类
+ * camera -> surfaceTexture -> oesTexture -> 屏幕
  */
 class CameraPresenter() : Camera.PreviewCallback{
 
@@ -181,6 +182,8 @@ class CameraPresenter() : Camera.PreviewCallback{
         //数据是倒的
         mPreviewCallback?.onPreviewFrame(data, camera)
         camera?.addCallbackBuffer(buffer)
+
+
     }
 
 

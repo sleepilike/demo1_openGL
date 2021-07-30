@@ -32,11 +32,10 @@ class CameraOESFilter(context: Context) : DefaultFilter(context) {
         vertexBuffer: FloatBuffer,
         coordHandle: Int,
         textureBuffer: FloatBuffer,
-        matrix: Matrix,
         mtx: FloatArray,
         textureId: Int,
         size: Int,
-        count: Int,
+        count: Int
     ) {
         super.onDraw(positionHandle, vertexBuffer, coordHandle, textureBuffer,  mtx, textureId, size, count)
     }

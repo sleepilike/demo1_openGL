@@ -122,6 +122,7 @@ class CameraRender(glSurfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
 
         mFBODrawer.setTextureId(glFrameBuffer.m2DTextureId)
 
+        //glFrameBuffer.m2DTextureId为预览+水印
 
         if(isTaking){
             //渲染到临时framBuffer
