@@ -1,17 +1,31 @@
 package com.example.demo1_opengl.encoder
 
 import android.content.Context
+import android.opengl.EGL14
+import android.opengl.EGLContext
+import android.opengl.GLES20
+import android.os.Build
 import android.os.Looper
 import android.os.Message
 import android.util.Log
+import android.view.Surface
+import androidx.annotation.RequiresApi
+import com.example.demo1_opengl.encoder.until.EGLHelper
+import com.example.demo1_opengl.encoder.until.EncoderUtil
+import com.example.demo1_opengl.filter.FBODrawer
+import com.example.demo1_opengl.filter.base.GLFrameBuffer
 import java.io.File
+import java.io.IOException
 import java.lang.ref.WeakReference
+import javax.microedition.khronos.egl.EGL
+
 
 /**
  * Created by zyy on 2021/7/30
  *
  * EncoderConfig 缺失eglContext 采用glSurface
  */
+@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 class CameraRecordEncoder : Runnable {
 
 
@@ -20,13 +34,14 @@ class CameraRecordEncoder : Runnable {
 
         class EncoderConfig(
             outputFile: File, width: Int, height: Int,
-            bitRate: Int, context: Context,
+            bitRate: Int, mEglContext : EGLContext, context: Context,
         ){
             val mOutputFile : File = outputFile
             val mWidth :Int = width
             val mHeight :Int = height
             val mBitRate : Int = bitRate
             val context : Context = context
+            val mEGLContext : EGLContext = mEglContext
         }
     }
 
@@ -113,7 +128,78 @@ class CameraRecordEncoder : Runnable {
 
         private var mWeakEncoder : WeakReference<CameraRecordEncoder> = WeakReference<CameraRecordEncoder>(encoder)
         override fun handleMessage(msg: Message) {
+            var encoder : CameraRecordEncoder? = mWeakEncoder.get()
+            if (encoder == null)
+                return
+            when(msg.what){
 
+            }
         }
     }
+
+    private var mTextureId : Int = 0
+    private lateinit var mEncoderUtil : EncoderUtil
+    private lateinit var mEGLHelper: EGLHelper
+    private lateinit var mConfig : EncoderConfig
+    private lateinit var mInputSurface : Surface
+    private var frameBuffer : GLFrameBuffer = GLFrameBuffer()
+    private var mDrawer : FBODrawer = FBODrawer(mConfig.context)
+
+    private fun handleStartRecording(config : EncoderConfig){
+        try {
+            mEncoderUtil = EncoderUtil(config.mWidth,config.mHeight,config.mBitRate,config.mOutputFile)
+            mConfig = config
+
+            mInputSurface = mEncoderUtil.getSurface()
+
+            mEGLHelper = EGLHelper(mInputSurface,mConfig.mEGLContext)
+
+            frameBuffer.prepare()
+
+        }catch (e:IOException){
+            throw RuntimeException(e)
+        }
+    }
+
+    private fun handleStopRecording(){
+        mEncoderUtil.drainEncoder(true)
+        releaseEncoder()
+    }
+
+    private fun releaseEncoder(){
+        mEncoderUtil.release()
+        mInputSurface.release()
+    }
+
+    private fun handleSetTexture (textureId : Int){
+        mTextureId = textureId
+        mDrawer.setSize(mConfig.mWidth,mConfig.mHeight,frameBuffer.width,frameBuffer.height)
+    }
+
+    private fun handleFrameAvailable(){
+        //先推动一次编码器工作 把编码后的数据写入muxer
+        mEncoderUtil.drainEncoder(false)
+
+        GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT or GLES20.GL_COLOR_BUFFER_BIT)
+        GLES20.glEnable(GLES20.GL_BLEND)
+        GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA)
+        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
+
+        GLES20.glViewport(0, 0, mConfig.mWidth, mConfig.mHeight)
+
+        /*
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER,frameBuffer.mFrameBuffer)
+        mDrawer.setTextureId(mTextureId)
+        mDrawer.draw()
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
+
+         */
+
+
+        //如何将数据推给编码器？
+
+
+    }
+
+
 }

@@ -13,8 +13,8 @@ class GLFrameBuffer (){
      val TAG : String = "GLFrameBuffer"
      var mFrameBuffer : Int = -1
      var mRenderBuffer : Int =-1
-     var height : Int = 0
-     var width : Int = 0
+     var height : Int = 2190
+     var width : Int = 1080
      var m2DTextureId : Int = -1
 
 

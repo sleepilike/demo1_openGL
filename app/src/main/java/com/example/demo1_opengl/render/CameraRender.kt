@@ -1,33 +1,29 @@
 package com.example.demo1_opengl.render
 
-import android.R.attr.data
 import android.graphics.Bitmap
 import android.graphics.SurfaceTexture
 import android.graphics.SurfaceTexture.OnFrameAvailableListener
-import android.opengl.GLES20
-import android.opengl.GLSurfaceView
-import android.opengl.Matrix
-import android.os.Environment
+import android.opengl.*
+import android.os.Build
 import android.util.Log
-import android.widget.ImageView
-import androidx.appcompat.app.AppCompatActivity
-import com.example.demo1_opengl.R
+import androidx.annotation.RequiresApi
 import com.example.demo1_opengl.filter.Drawer
 import com.example.demo1_opengl.filter.FBODrawer
 import com.example.demo1_opengl.filter.base.GLFrameBuffer
 import com.example.demo1_opengl.holder.CameraPresenter
+import com.example.demo1_opengl.record.MediaRecord
 import com.example.demo1_opengl.utils.GLUtil
 import java.io.*
 import java.nio.ByteBuffer
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
-import kotlin.experimental.and
 
 
 /**
  * Created by zyy on 2021/7/12
  *
  */
+@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 class CameraRender(glSurfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
 
 
@@ -40,7 +36,16 @@ class CameraRender(glSurfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
     private lateinit var glFrameBuffer : GLFrameBuffer
     private lateinit var takeFrameBuffer : GLFrameBuffer
 
+    private lateinit var mMediaRecord : MediaRecord
+    private lateinit var mRecordListener : MediaRecord.OnRecordFinishListener
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    fun setOnRecordFinishListener(listener: MediaRecord.OnRecordFinishListener) {
+        if (null != mMediaRecord) {
+            mMediaRecord.setOnRecordFinishListener(listener)
+        }
+        mRecordListener = listener
+    }
 
     private var mType : Boolean = true
     //变换矩阵
@@ -48,7 +53,7 @@ class CameraRender(glSurfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
 
     private var isTaking : Boolean = false
 
-    lateinit var mListener : MInterface
+    private lateinit var mListener : MInterface
     interface  MInterface{
         fun take(bitmap: Bitmap)
     }
@@ -56,6 +61,8 @@ class CameraRender(glSurfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
         this.mListener = mInterface
     }
 
+
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         //文字支持透明
         GLES20.glEnable(GLES20.GL_BLEND);
@@ -76,8 +83,14 @@ class CameraRender(glSurfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
 
         takeFrameBuffer = GLFrameBuffer()
 
+        //渲染线程的上下文 作为EGL的sharedContext
+        var eglContext : EGLContext = EGL14.eglGetCurrentContext()
+        mMediaRecord = MediaRecord(glSurfaceView.context,"/sdcard/a.mp4",eglContext)
+//        mMediaRecord.setOnRecordFinishListener(mRecordListener)
+
     }
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
 
 
@@ -94,15 +107,18 @@ class CameraRender(glSurfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
         takeFrameBuffer.prepare()
 
 
+
         mFBODrawer.setSize(width,height,glFrameBuffer.width,glFrameBuffer.height)
 
         //开始预览
         cameraPresenter.startPreview(mSurfaceTexture)
 
+        mMediaRecord.setSize(width,height)
 
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onDrawFrame(gl: GL10?) {
 
         GLES20.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -139,6 +155,9 @@ class CameraRender(glSurfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
         }
 
         mFBODrawer.draw()
+
+        //录制
+        mMediaRecord.encoderFrame(glFrameBuffer.m2DTextureId,mSurfaceTexture.timestamp)
 
     }
 
@@ -211,6 +230,20 @@ class CameraRender(glSurfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
     fun setTaking(isTaking : Boolean){
         this.isTaking = isTaking
         Log.d("TAG", "setTaking: $isTaking")
+    }
+
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    fun startRecord() {
+        try {
+            mMediaRecord.start()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    fun stopRecord() {
+        mMediaRecord.stop()
     }
 
 

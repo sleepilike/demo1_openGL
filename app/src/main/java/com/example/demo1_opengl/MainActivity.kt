@@ -3,6 +3,7 @@ package com.example.demo1_opengl
 import android.Manifest
 import android.content.Intent
 import android.graphics.Bitmap
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
@@ -10,10 +11,11 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import androidx.annotation.RequiresApi
 import com.example.demo1_opengl.render.CameraRender
 import com.example.demo1_opengl.view.CameraSurfaceView
 
-
+@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 class MainActivity : BaseActivity(),View.OnClickListener{
 
     private lateinit var mView : CameraSurfaceView
@@ -22,6 +24,7 @@ class MainActivity : BaseActivity(),View.OnClickListener{
     private lateinit var mGoButton : Button
     private lateinit var mImageView : ImageView
     private var mType : Boolean = true
+    private var isStart : Boolean = false
 
     private var handler : Handler = object : Handler(){
         override fun handleMessage(msg: Message) {
@@ -34,6 +37,7 @@ class MainActivity : BaseActivity(),View.OnClickListener{
             }
         }
     }
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -64,7 +68,15 @@ class MainActivity : BaseActivity(),View.OnClickListener{
         mImageView = findViewById(R.id.photo_iv)
 
 
+        /**
+         * 录制完成
+         */
+
+
     }
+
+
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     override fun onClick(v: View?) {
         when(v?.id){
             R.id.cut_bt -> {
@@ -83,9 +95,21 @@ class MainActivity : BaseActivity(),View.OnClickListener{
                 })
             }
             R.id.goRecoding_bt ->{
-
+                if ( !isStart){
+                    mView.startRecord()
+                    isStart = true
+                    mGoButton.text = "结束录制"
+                }else if (isStart){
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        mView.stopRecord()
+                    }
+                    isStart = false
+                    mGoButton.text = "开始录制"
+                }
             }
         }
+
+
     }
 
 
